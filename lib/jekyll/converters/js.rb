@@ -74,7 +74,7 @@ module Jekyll
       private
 
       def insert_imports(content)
-        content.enum_for(:scan, /^\W*=\s*(\w+)\W+([\w\/\\\-\.]+)\W*$/).map {
+        content.enum_for(:scan, /^\W*=\s*(\w+)\W+([\w\/\\\-\.:]+)\W*$/).map {
           { directive: Regexp.last_match[1],
             path: Regexp.last_match[2],
             insert_at: Regexp.last_match.end(0) }
@@ -86,17 +86,21 @@ module Jekyll
             import_content = load_paths.reduce([]) { |files, load_path|
               glob = case match[:directive]
               when 'import'
-                match[:path] += '.js' unless match[:path].end_with?('.js')
-                File.join(load_path, '**', match[:path])
+                if (match[:path] =~ URI::regexp).nil?
+                  match[:path] += '.js' unless match[:path].end_with?('.js')
+                  Dir.glob(File.join(load_path, '**', match[:path]))
+                else
+                  [match[:path]]
+                end
               when 'import_directory'
-                File.join(load_path, '**', match[:path], '*.js')
+                Dir.glob(File.join(load_path, '**', match[:path], '*.js'))
               when 'import_tree'
-                File.join(load_path, '**', match[:path], '**', '*.js')
+                Dir.glob(File.join(load_path, '**', match[:path], '**', '*.js'))
               end
 
-              files + Dir.glob(glob)
+              files + glob
             }.uniq.reduce('') { |import_content, file|
-              import_content += File.read(file)
+              import_content += (file =~ URI::regexp).nil? ? File.read(file) : Net::HTTP.get(URI(file))
             }
 
             content.insert(match[:insert_at], "\n#{insert_imports(import_content)}")
