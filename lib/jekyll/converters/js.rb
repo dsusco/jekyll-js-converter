@@ -1,4 +1,5 @@
 require 'uglifier'
+require 'jekyll/js_source_map_page'
 
 module Jekyll
   module Converters
@@ -8,21 +9,16 @@ module Jekyll
       safe true
       priority :low
 
-      def initialize(config = {})
-        @site = Jekyll.sites.last
-        super
+      def associate_page(page)
+        @page = page
+        @site = @page.site
+        @source_map_page = JsSourceMapPage.new(@page)
       end
 
-      def matches(ext)
-        ext =~ /^\.js$/i
-      end
-
-      def output_ext(ext)
-        '.js'
-      end
-
-      def safe?
-        !!@config['safe']
+      def dissociate_page(page)
+        @page = nil
+        @site = nil
+        @source_map_page = nil
       end
 
       def javascript_config
@@ -60,18 +56,63 @@ module Jekyll
         end
       end
 
-      def convert(content)
-        config = Jekyll::Utils.symbolize_hash_keys(
-          Jekyll::Utils.deep_merge_hashes(
-            { :uglifer => {} },
-            javascript_config
-          )
-        )
+      def matches(ext)
+        ext =~ /^\.js$/i
+      end
 
-        Uglifier.new(config[:uglifer]).compile(insert_imports(content))
+      def output_ext(ext)
+        '.js'
+      end
+
+      def safe?
+        !!@config['safe']
+      end
+
+      def convert(content)
+        if generate_source_map?
+          config = Jekyll::Utils.symbolize_hash_keys(
+            Jekyll::Utils.deep_merge_hashes(
+              { :uglifer => {
+                  :source_map => {
+                    :map_url => @source_map_page.name,
+                    :sources_content => true,
+                    :filename => @page.name
+                  }
+                }
+              },
+              javascript_config
+            )
+          )
+
+          uglified, source_map = Uglifier.new(config[:uglifer]).compile_with_map(insert_imports(content))
+
+          @source_map_page.source_map(source_map)
+          @site.pages << @source_map_page
+
+          uglified
+        else
+          config = Jekyll::Utils.symbolize_hash_keys(
+            Jekyll::Utils.deep_merge_hashes(
+              { :uglifer => {} },
+              javascript_config
+            )
+          )
+
+          Uglifier.new(config[:uglifer]).compile(insert_imports(content))
+        end
       end
 
       private
+
+      def generate_source_map?
+        if @page.nil? || source_map_option.eql?(:never)
+          false
+        elsif source_map_option.eql?(:always)
+          true
+        else
+          source_map_option.eql?(:development) && Jekyll.env.eql?('development')
+        end
+      end
 
       def insert_imports(content)
         content.enum_for(:scan, /^\W*=\s*(\w+)\W+([\w\/\\\-\.:]+)\W*$/).map {
@@ -108,6 +149,10 @@ module Jekyll
         }
 
         content
+      end
+
+      def source_map_option
+        javascript_config.fetch('source_map', :always).to_sym
       end
     end
   end
