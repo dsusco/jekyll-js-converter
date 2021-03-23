@@ -1,4 +1,4 @@
-# jekyll-js-converter
+# jekyll-js-converter [![Gem Version](https://badge.fury.io/rb/jekyll-js-converter.svg)](https://badge.fury.io/rb/jekyll-js-converter)
 A JavaScript converter for Jekyll. JavaScript files can be concatenated using a simple domain-specific language and then minified using [Uglifier](https://github.com/lautis/uglifier).
 
 [![Build Status](https://travis-ci.com/dsusco/jekyll-js-converter.svg?branch=main)](https://travis-ci.com/dsusco/jekyll-js-converter)
