@@ -66,7 +66,7 @@ Defaults to `always`.
 
 ### `uglifier`
 
-Options to pass to pass to `Uglifier.new` which is then used to compile the JavaScript.
+Options to pass to `Uglifier.new` which is then used to compile the JavaScript.
 
 Defaults to `{}`.
 
