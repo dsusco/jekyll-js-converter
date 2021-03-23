@@ -110,12 +110,12 @@ module Jekyll
         elsif source_map_option.eql?(:always)
           true
         else
-          source_map_option.eql?(:development) && Jekyll.env.eql?('development')
+          :development == source_map_option == Jekyll.env.to_sym
         end
       end
 
       def insert_imports(content)
-        content.enum_for(:scan, /^\W*=\s*(\w+)\W+([\w\/\\\-\.:]+)\W*$/).map {
+        content.enum_for(:scan, /^\/\/=\s*(\w+)\s+([\w\/\\\-\.:]+)\W*$/).map {
           { directive: Regexp.last_match[1],
             path: Regexp.last_match[2],
             insert_at: Regexp.last_match.end(0) }
