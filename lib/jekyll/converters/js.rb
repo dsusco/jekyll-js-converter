@@ -110,7 +110,7 @@ module Jekyll
         elsif source_map_option.eql?(:always)
           true
         else
-          :development == source_map_option == Jekyll.env.to_sym
+          :development == source_map_option && source_map_option == Jekyll.env.to_sym
         end
       end
 
