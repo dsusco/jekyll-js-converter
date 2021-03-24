@@ -17,7 +17,7 @@ And then bundle:
 
 ## Usage
 
-Add front matter to the JavaScript files which jekyll-js-converter needs to convert (i.e. the JavaScript files that need to be served). Three directives can be used to add the contents of other JavaScript files to the file being converted. Note that these other files do not need front matter unless they also need to be served separately (think of them as "partials").
+Add front matter to the JavaScript files which jekyll-js-converter needs to convert (i.e. the JavaScript files that need to be served). Three directives can be used to add the contents of other JavaScript files to the file being converted. Note that these other files can use the directives too, but do not need front matter unless they also need to be served separately (think of them as "partials").
 
     ---
     ---
