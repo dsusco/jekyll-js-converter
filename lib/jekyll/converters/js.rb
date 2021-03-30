@@ -11,7 +11,6 @@ module Jekyll
 
       def associate_page(page)
         @page = page
-        @site = @page.site
         @source_map_page = JsSourceMapPage.new(@page)
       end
 
@@ -31,19 +30,19 @@ module Jekyll
 
       def load_paths
         @load_paths ||= begin
-          paths = [Jekyll.sanitized_path(@site.source, javascript_dir)]
-          paths += javascript_config['load_paths'].map { |load_path| File.expand_path(load_path) } rescue []
+          paths = [Jekyll.sanitized_path(site.source, javascript_dir)]
+          paths += javascript_config['load_paths'].map { |load_path| File.expand_path(load_path, site.source) } rescue []
 
           if safe?
-            paths.map! { |path| Jekyll.sanitized_path(@site.source, path) }
+            paths.map! { |path| Jekyll.sanitized_path(site.source, path) }
           end
 
-          Dir.chdir(@site.source) do
+          Dir.chdir(site.source) do
             paths = paths.flat_map { |path| Dir.glob(path) }
 
             paths.map! do |path|
               if safe?
-                Jekyll.sanitized_path(site_source, path)
+                Jekyll.sanitized_path(site.source, path)
               else
                 File.expand_path(path)
               end
@@ -51,7 +50,7 @@ module Jekyll
           end
 
           paths.uniq!
-          paths << @site.theme.javascript_path
+          paths << site.theme.javascript_path if site.theme&.javascript_path
           paths.select { |path| File.directory?(path) }
         end
       end
@@ -60,7 +59,7 @@ module Jekyll
         ext =~ /^\.js$/i
       end
 
-      def output_ext(ext)
+      def output_ext(ext = '')
         '.js'
       end
 
@@ -87,7 +86,7 @@ module Jekyll
           uglified, source_map = Uglifier.new(config[:uglifer]).compile_with_map(insert_imports(content))
 
           @source_map_page.source_map(source_map)
-          @site.pages << @source_map_page
+          site.pages << @source_map_page
 
           uglified
         else
@@ -149,6 +148,10 @@ module Jekyll
         }
 
         content
+      end
+
+      def site
+        @site ||= @page.nil? ? Jekyll.sites.last : @page.site
       end
 
       def source_map_option

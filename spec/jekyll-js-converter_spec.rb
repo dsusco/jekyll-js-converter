@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe(JekyllJsConverter) do
   let(:site) do
-    Jekyll::Site.new(site_configuration({ 'theme' => 'minima' }))
+    make_site({ 'theme' => 'minima' })
   end
 
   context 'Jekyll::Theme' do

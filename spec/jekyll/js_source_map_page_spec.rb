@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe(Jekyll::JsSourceMapPage) do
   let(:js_source_map_page) do
-    site = Jekyll::Site.new(site_configuration)
+    site = make_site
     page = Jekyll::PageWithoutAFile.new(site, 'base', 'dir', 'name')
     Jekyll::JsSourceMapPage.new(page)
   end
@@ -17,7 +17,7 @@ describe(Jekyll::JsSourceMapPage) do
   end
 
   it 'is an asset file' do
-    expect(js_source_map_page.asset_file?).to be_truthy
+    expect(js_source_map_page.asset_file?).to be true
   end
 
   it 'inspect shows class and name' do

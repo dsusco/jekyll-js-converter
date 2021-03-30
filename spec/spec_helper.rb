@@ -35,7 +35,11 @@ RSpec.configure do |config|
     )
   end
 
-  def make_site(config)
+  def make_site(config = {})
     Jekyll::Site.new(site_configuration.merge(config))
+  end
+
+  def js_converter_instance(site)
+    site.find_converter_instance(Jekyll::Converters::Js)
   end
 end

@@ -1,3 +1,5 @@
+#ruby=2.7.2
+#ruby-gemset=jekyll-js-converter
 source 'https://rubygems.org'
 gemspec
 
