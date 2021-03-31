@@ -28,7 +28,7 @@ Add front matter to the JavaScript files which jekyll-js-converter needs to conv
 
     console.log('This file has been converted by jekyll-js-converter!')
 
-By default, jekyll-js-converter will look for the files and directories to import in the site's `_javascript` folder as well as the theme's `_javascript` folder (if one is present). It can also be configured with additional load paths as well (see Configuration).
+By default, jekyll-js-converter will look for the files and directories to import in the site's `_javascript` folder as well as the theme's `_javascript` folder (if one is present). It can also be configured with additional load paths as well (see [Configuration](#configuration)).
 
   * `import` adds the contents of the given file (either a local file or a URI)
   * `import_directory` adds the contents of each `.js` file in the given directory
