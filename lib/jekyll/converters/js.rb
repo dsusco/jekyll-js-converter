@@ -71,7 +71,7 @@ module Jekyll
         if generate_source_map?
           config = Jekyll::Utils.symbolize_hash_keys(
             Jekyll::Utils.deep_merge_hashes(
-              { :uglifer => {
+              { :uglifier => {
                   :source_map => {
                     :map_url => @source_map_page.name,
                     :sources_content => true,
@@ -83,7 +83,7 @@ module Jekyll
             )
           )
 
-          uglified, source_map = Uglifier.new(config[:uglifer]).compile_with_map(insert_imports(content))
+          uglified, source_map = Uglifier.new(config[:uglifier]).compile_with_map(insert_imports(content))
 
           @source_map_page.source_map(source_map)
           site.pages << @source_map_page
@@ -92,12 +92,12 @@ module Jekyll
         else
           config = Jekyll::Utils.symbolize_hash_keys(
             Jekyll::Utils.deep_merge_hashes(
-              { :uglifer => {} },
+              { :uglifier => {} },
               javascript_config
             )
           )
 
-          Uglifier.new(config[:uglifer]).compile(insert_imports(content))
+          Uglifier.new(config[:uglifier]).compile(insert_imports(content))
         end
       end
 
