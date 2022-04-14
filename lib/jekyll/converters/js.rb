@@ -83,7 +83,7 @@ module Jekyll
             )
           )
 
-          uglified, source_map = Uglifier.new(config[:uglifer]).compile_with_map(insert_imports(content))
+          uglified, source_map = Uglifier.new(Jekyll::Utils.symbolize_hash_keys(config[:uglifer])).compile_with_map(insert_imports(content))
 
           @source_map_page.source_map(source_map)
           site.pages << @source_map_page
@@ -97,7 +97,7 @@ module Jekyll
             )
           )
 
-          Uglifier.new(config[:uglifer]).compile(insert_imports(content))
+          Uglifier.new(Jekyll::Utils.symbolize_hash_keys(config[:uglifer])).compile(insert_imports(content))
         end
       end
 
