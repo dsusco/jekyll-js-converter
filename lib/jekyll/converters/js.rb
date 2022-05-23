@@ -1,4 +1,4 @@
-require 'terser'
+require 'uglifier'
 require 'jekyll/js_source_map_page'
 
 module Jekyll
@@ -83,7 +83,7 @@ module Jekyll
             )
           )
 
-          uglified, source_map = Terser.new(config[:uglifier]).compile_with_map(insert_imports(content))
+          uglified, source_map = Uglifier.new(config[:uglifier]).compile_with_map(insert_imports(content))
 
           @source_map_page.source_map(source_map)
           site.pages << @source_map_page
@@ -97,7 +97,7 @@ module Jekyll
             )
           )
 
-          Terser.new(config[:uglifier]).compile(insert_imports(content))
+          Uglifier.new(config[:uglifier]).compile(insert_imports(content))
         end
       end
 
