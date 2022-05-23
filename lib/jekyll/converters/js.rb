@@ -70,18 +70,16 @@ module Jekyll
 
       def convert(content)
         if generate_source_map?
-          config = Jekyll::Utils.symbolize_hash_keys(
-            Jekyll::Utils.deep_merge_hashes(
-              { :uglifier => {
-                  :source_map => {
-                    :map_url => @source_map_page.name,
-                    :sources_content => true,
-                    :filename => @page.name
-                  }
+          config = Jekyll::Utils.deep_merge_hashes(
+            { :uglifier => {
+                :source_map => {
+                  :map_url => @source_map_page.name,
+                  :sources_content => true,
+                  :filename => @page.name
                 }
-              },
-              javascript_config
-            )
+              }
+            },
+            javascript_config
           )
 
           uglified, source_map = Uglifier.new(config[:uglifier]).compile_with_map(insert_imports(content))
@@ -91,11 +89,9 @@ module Jekyll
 
           uglified
         else
-          config = Jekyll::Utils.symbolize_hash_keys(
-            Jekyll::Utils.deep_merge_hashes(
-              { :uglifier => {} },
-              javascript_config
-            )
+          config = Jekyll::Utils.deep_merge_hashes(
+            { :uglifier => {} },
+            javascript_config
           )
 
           Uglifier.new(config[:uglifier]).compile(insert_imports(content))
