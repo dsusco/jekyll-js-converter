@@ -1,5 +1,6 @@
 require 'uglifier'
 require 'jekyll/js_source_map_page'
+require 'jekyll/core_ext/hash'
 
 module Jekyll
   module Converters
@@ -21,17 +22,17 @@ module Jekyll
       end
 
       def javascript_config
-        @javascript_config ||= @config['javascript'] || {}
+        @javascript_config ||= @config['javascript'].deep_symbolize_keys || {}
       end
 
       def javascript_dir
-        javascript_config['javascript_dir'].to_s.empty? ? '_javascript' : javascript_config['javascript_dir']
+        javascript_config[:javascript_dir].to_s.empty? ? '_javascript' : javascript_config[:javascript_dir]
       end
 
       def load_paths
         @load_paths ||= begin
           paths = [Jekyll.sanitized_path(site.source, javascript_dir)]
-          paths += javascript_config['load_paths'].map { |load_path| File.expand_path(load_path, site.source) } rescue []
+          paths += javascript_config[:load_paths].map { |load_path| File.expand_path(load_path, site.source) } rescue []
 
           if safe?
             paths.map! { |path| Jekyll.sanitized_path(site.source, path) }
@@ -155,7 +156,7 @@ module Jekyll
       end
 
       def source_map_option
-        javascript_config.fetch('source_map', :always).to_sym
+        javascript_config.fetch(:source_map, :always).to_sym
       end
     end
   end

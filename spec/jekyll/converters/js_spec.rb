@@ -26,7 +26,7 @@ describe(Jekyll::Converters::Js) do
     end
 
     it 'returns the given config' do
-      expect(converter({ 'javascript_dir' => 'test' }).javascript_config).to eq({ 'javascript_dir' => 'test' })
+      expect(converter({ 'uglifier' => { 'harmony' => true } }).javascript_config).to eq({ :uglifier => { :harmony => true } })
     end
   end
 
