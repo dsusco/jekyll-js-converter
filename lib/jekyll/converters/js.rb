@@ -22,7 +22,11 @@ module Jekyll
       end
 
       def javascript_config
-        @javascript_config ||= @config['javascript'].deep_symbolize_keys || {}
+        @javascript_config ||= begin
+          options = @config['javascript'] || {}
+
+          options.deep_symbolize_keys
+        end
       end
 
       def javascript_dir
