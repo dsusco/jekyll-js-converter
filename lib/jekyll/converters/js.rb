@@ -1,4 +1,5 @@
 require 'uglifier'
+require 'uri'
 require 'jekyll/js_source_map_page'
 require 'jekyll/core_ext/hash'
 
